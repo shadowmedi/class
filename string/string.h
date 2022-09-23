@@ -4,7 +4,6 @@
 #include <iostream>
 namespace xm
 {
-	
 	class string
 	{
 	public:
@@ -49,6 +48,29 @@ namespace xm
 			strcpy(_str, str);
 		}
 
+		//拷贝构造函数(深拷贝)——不能让2个对象指向同一块空间
+		/*string(const string& s)
+			:_str(new char[s._capacity+1])
+			,_capacity(s._capacity)
+			,_size(s._size)
+		{
+			strcpy(_str, s._str);
+		}*/
+
+		//拷贝构造2.0
+		string(const string& s)
+			:_str(nullptr)
+			, _capacity(0)
+			,_size(0)
+		{
+			//调用构造函数实现拷贝构造
+			string tmp = s._str;
+			std::swap(tmp._str, _str);
+			std::swap(tmp._size, _size);
+			std::swap(tmp._capacity, _capacity);
+		}
+
+
 		//析构函数
 		~string()
 		{
@@ -57,6 +79,7 @@ namespace xm
 			_size = 0;
 			_capacity = 0;
 		}
+
 
 		//普通迭代器——应用于 普通对象
 		typedef char* iterator;
@@ -108,11 +131,55 @@ namespace xm
 			return _str[pos];
 		}
 
+		//赋值要手动释放原来的空间
+		/*string& operator=(const string& s)
+		{
+			//自己给自己赋值不需要动
+			if (this != &s)
+			{
+				//深拷贝
+				char* tem = new char[s._capacity + 1];
+				strcpy(tem, s._str);
 
-		void push_back(char x);
+				//手动释放原来的空间
+				delete[] _str;
+
+				_str = tem;
+				_size = s._size;
+				_capacity = s._capacity;
+			}
+			return *this;
+		}*/
+
+		void swap(string& s)
+		{
+			std::swap(_str, s._str);
+			std::swap(_size, s._size);
+			std::swap(_capacity, s._capacity);
+		}
+
+		////赋值2.0
+		//string& operator=(const string& s)
+		//{
+		//	if (this != &s)
+		//	{
+		//		string tmp(s._str);
+		//		string::swap(tmp);
+		//	}
+		//	return *this;
+		//}
+
+		//赋值3.0
+		string& operator=(string s)
+		{
+			swap(s);
+			return *this;
+		}
+
+		/*void push_back(char x);
 		void append(const char* str);
 		string& operator+=(char* str);
-		string& operator+=(char x);
+		string& operator+=(char x);*/
 
 	private:
 		//这里是成员的声明
@@ -120,6 +187,7 @@ namespace xm
 		size_t _capacity;
 		size_t _size;
 	};
+
 	void test_string1()
 	{
 		string str1("abcdeft");
@@ -144,5 +212,29 @@ namespace xm
 		{
 			std::cout << i;
 		}
+	}
+
+	void test_string2()
+	{
+		//拷贝构造
+		string s1 = "abcd";
+		string s2(s1);
+		/*string::iterator it = s2.begin();
+		while (it != s2.end())
+		{
+			std::cout << *it;
+			it++;
+		}*/
+
+		//赋值
+		string s3 = "cdef";
+		s3 = s1;
+		string::iterator it = s3.begin();
+		while (it != s3.end())
+		{
+			std::cout << *it;
+			it++;
+		}
+		s1 = s1;
 	}
 }

@@ -2,6 +2,6 @@
 #include "string.h"
 int main()
 {
-	xm::test_string1();
+	xm::test_string2();
 	return 0;
 }
