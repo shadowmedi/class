@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <functional>
+
 using namespace std;
 namespace xm
 {
@@ -12,8 +14,8 @@ namespace xm
 		priority_queue()
 		{
 		}
-
-		priority_queue(T* begin, T* end)
+		template <class firstIterator, class endIterator>
+		priority_queue(firstIterator* first, endIterator* last)
 		{
 			while (begin != end)
 			{
@@ -81,6 +83,20 @@ namespace xm
 			adjustDown(0);
 		}
 
+		bool empty() const
+		{
+			return _con.empty();
+		}
+
+		size_t size() const
+		{
+			return _con.size();
+		}
+
+		T& top() const
+		{
+			return _con.top();
+		}
 	private:
 		Container _con;
 	};
